@@ -11,12 +11,16 @@
 import sys
 import os
 
+format_string = "{:08b}"
+
 # Cipher function that is used before xor.
 def cipher_function(i, k, r):
     return (((2 * r * k)**i) % 15)
 
+# Put the given message through the Feistel cipher process. This function can be
+# used to encrypt or decrypt. Pt is the message, k is the key, and r is the rounds
+# function input.
 def feistel_cipher(pt, k, r):
-    format_string = "{:08b}"
     pt_b = format_string.format(pt)
 
     leftside, rightside = int(pt_b[:int(len(pt_b) / 2)], 2), int(pt_b[int(len(pt_b) / 2):], 2)
@@ -27,14 +31,14 @@ def feistel_cipher(pt, k, r):
         leftside = rightside
         rightside = left_xor
 
-    format_string = "{:04b}"
-    result = format_string.format(rightside)
-    result += format_string.format(leftside)
+    format_string_tmp = "{:04b}"
+    result = format_string_tmp.format(rightside)
+    result += format_string_tmp.format(leftside)
     return int(result, 2)
 
+# Encrypt plaintext with the Cipher Block Chaining mode.
 def cbc_e(pt, k, r, iv, cb):
     result_array = []
-    format_string = "{:08b}"
     iv_val = ord(iv)
 
     for c in pt:
@@ -48,9 +52,9 @@ def cbc_e(pt, k, r, iv, cb):
 
     return result_array
 
+# Encrypt plaintext with the Cipher Block Chaining mode.
 def cbc_d(pt, k, r, iv, pb):
     result_array = []
-    format_string = "{:08b}"
     iv_val = ord(iv)
 
     for c in pt:
@@ -86,11 +90,6 @@ def main():
     #        break
     #    else:
     #        print("Need to select a valid option ('file' or 'stdin')")
-
-    # Even length check
-    #if (len(plaintext) % 2) != 0:
-    #    print("Please give plaintext of even length")
-    #    sys.exit(0)
 
     plain = input("Plaintext please: ")
     plaintext = plain
